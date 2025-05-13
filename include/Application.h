@@ -5,7 +5,7 @@
 namespace JuuPiero {
 struct ApplicationProperties {
     int Width, Height;
-    const char* Title;
+    std::string Title;
     WindowPlatform Platform;
 };
 

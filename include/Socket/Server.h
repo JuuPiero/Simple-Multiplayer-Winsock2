@@ -9,15 +9,17 @@ public:
     void ShutDown();
     void Run();
     ~Server();
-private:
     Server();
+    // void Listen(int port);
+private:
+    void ClientHandler(SOCKET clientSocket, uint32_t clientSocketId);
+private:
     static Server* s_Insntance;
     WSADATA m_WsaData;
     SOCKET m_ListenSocket;
     sockaddr_in m_ServerAddr;
     uint32_t m_Port;
     int iResult;
-
-    std::unordered_map<std::string, SOCKET> m_Clients; 
+    std::unordered_map<uint32_t, SOCKET> m_ClientSockets;
 };
 }

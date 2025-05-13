@@ -1,15 +1,13 @@
 #include "Application.h"
 #include "Utils.h"
 #include "Entry.h"
-#include "Sanbox.h"
-
-
+#include "ServerApplication.h"
 
 Shared<JuuPiero::Application> CreateApplication() {
-    auto props = JuuPiero::ApplicationProperties();
+    JuuPiero::ApplicationProperties props;
     props.Width = WINDOW_WIDTH;
     props.Height = WINDOW_HEIGHT;
     props.Title = "Native Window";
     props.Platform = JuuPiero::WindowPlatform::SDL;
-    return std::make_shared<Sanbox>(props);
+    return std::make_shared<JuuPiero::ServerApplication>(props);
 }

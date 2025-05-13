@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace JuuPiero {
-GLFWNativeWindow::GLFWNativeWindow(int width, int height, const char* title, Application* app): Window(width, height, title, app) {
+GLFWNativeWindow::GLFWNativeWindow(int width, int height, std::string title, Application* app): Window(width, height, title, app) {
     Initialize();
 }
 
@@ -15,7 +15,7 @@ void GLFWNativeWindow::Initialize() {
     }
   
 
-    m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, nullptr, nullptr);
+    m_Window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), nullptr, nullptr);
     
     if(m_Window == nullptr) {
         glfwTerminate();

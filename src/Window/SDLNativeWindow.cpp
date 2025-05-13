@@ -6,7 +6,7 @@
 #include "Application.h"
 
 namespace JuuPiero {
-SDLNativeWindow::SDLNativeWindow(int width, int height, const char* title, Application* app): Window(width, height, title, app) {
+SDLNativeWindow::SDLNativeWindow(int width, int height, std::string title, Application* app): Window(width, height, title, app) {
     Initialize();
 }
 
@@ -15,7 +15,7 @@ void SDLNativeWindow::Initialize() {
         std::cout << "Failed to initialize the SDL2 library\n";
         return ;
     }
-    m_Window = SDL_CreateWindow(m_Title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_Width, m_Height, 0);
+    m_Window = SDL_CreateWindow(m_Title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_Width, m_Height, SDL_WINDOW_RESIZABLE);
    
     // CreateOpenGLContext();
 
@@ -23,13 +23,14 @@ void SDLNativeWindow::Initialize() {
 }
 
 void SDLNativeWindow::CreateOpenGLContext() {
+   
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
     SDL_GLContext context = SDL_GL_CreateContext(m_Window);
     SDL_GL_MakeCurrent(m_Window, context);
     if (!gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress)) {
-        throw(std::string("Failed to initialize GLAD"));
+        std::cout << "Failed to initialize GLAD" << std::endl;;  // Không bắt được std::string
     }
 }
 

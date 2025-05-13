@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
 
-#include <spdlog/spdlog.h>
+// #include <spdlog/spdlog.h>
 
 #include <cstdlib>
 #include <stdlib.h>
@@ -31,8 +31,12 @@
 #include <ctime>
 #include <iomanip>
 #include <random>
-#define WINDOW_WIDTH 1080
-#define WINDOW_HEIGHT 720
+
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 680
+
+#define MAX_CLIENTS 1024
+#define DEFAULT_BUFLEN 2048
 // #include <nlohmann/json.hpp>
 // using json = nlohmann::json;
 #include "Math/Vector2.h"
@@ -49,6 +53,7 @@ template <typename T> using Unique = std::unique_ptr<T>;
 template <typename T> using Shared = std::shared_ptr<T>;
 template <typename T> using Weak = std::weak_ptr<T>;
 
-// inline Vector2 WindowSize() {
-
-// }
+inline uint32_t GetId() {
+    static uint32_t clientIdCounter = 0;
+    return ++clientIdCounter;
+}

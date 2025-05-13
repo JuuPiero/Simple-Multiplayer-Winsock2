@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string>
 namespace JuuPiero {
 class Application;
 
@@ -12,7 +12,7 @@ enum class WindowPlatform {
 class Window {
 private:
 public:
-    Window(int width, int height, const char* title, Application* app = nullptr): m_Width(width), m_Height(height), m_Title(title), m_App(app) {}
+    Window(int width, int height, std::string title, Application* app = nullptr): m_Width(width), m_Height(height), m_Title(title), m_App(app) {}
     ~Window() = default;
     
     virtual void Update() = 0;
@@ -27,7 +27,7 @@ public:
 protected:
     int m_Width;
     int m_Height;
-    const char* m_Title;
+    std::string m_Title;
     JuuPiero::Application* m_App;
 };
 }

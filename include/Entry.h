@@ -7,6 +7,14 @@ extern Shared<JuuPiero::Application> CreateApplication();
 
 int main(int argc, char *argv[]) {
     auto app = CreateApplication();
-    app->Run();
+   
+    try {
+        app->Run();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << "\n";
+    }
+  
     return 0;
 }

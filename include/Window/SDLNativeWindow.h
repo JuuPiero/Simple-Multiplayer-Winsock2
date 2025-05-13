@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 #include "Window/Window.h"
 struct SDL_Window;
@@ -8,7 +9,7 @@ namespace JuuPiero {
 
 class SDLNativeWindow : public Window {
 public:
-    SDLNativeWindow(int width, int height, const char* title, Application* app = nullptr);
+    SDLNativeWindow(int width, int height, std::string title, Application* app = nullptr);
     ~SDLNativeWindow();
     void Initialize() override;
     void PollEvents() override;
