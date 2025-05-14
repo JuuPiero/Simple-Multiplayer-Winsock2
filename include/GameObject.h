@@ -6,6 +6,8 @@ namespace JuuPiero {
 class GameObject {
 public:
     GameObject(int x, int y, int width, int height);
+    GameObject() {}
+
     ~GameObject() = default;
     virtual void Render();
     virtual void Update(uint32_t deltaTime);

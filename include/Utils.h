@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
 
-#include <spdlog/spdlog.h>
+// #include <spdlog/spdlog.h>
 
 #include <cstdlib>
 #include <stdlib.h>
@@ -31,10 +31,14 @@
 #include <ctime>
 #include <iomanip>
 #include <random>
-#define WINDOW_WIDTH 1080
-#define WINDOW_HEIGHT 720
-// #include <nlohmann/json.hpp>
-// using json = nlohmann::json;
+#define WINDOW_WIDTH 540
+#define WINDOW_HEIGHT 480
+
+#define MAX_CLIENTS 1024
+#define DEFAULT_BUFLEN 2048
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 #include "Math/Vector2.h"
 #define PrintLn(mess) std::cout << mess << std::endl
 
@@ -48,7 +52,3 @@ inline std::string GetFileContents(const char* filePath) {
 template <typename T> using Unique = std::unique_ptr<T>;
 template <typename T> using Shared = std::shared_ptr<T>;
 template <typename T> using Weak = std::weak_ptr<T>;
-
-// inline Vector2 WindowSize() {
-
-// }

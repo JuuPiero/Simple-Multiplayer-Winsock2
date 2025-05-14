@@ -1,6 +1,8 @@
 #pragma once
 #include "Application.h"
 #include <SDL2/SDL.h>
+#include "Socket/Client.h"
+#include "Player.h"
 class Sanbox : public JuuPiero::Application {
 public:
     Sanbox(const JuuPiero::ApplicationProperties& props);
@@ -13,6 +15,9 @@ public:
 
 protected:
     static SDL_Renderer* s_Renderer;
-    // static Sanbox
+
+    // JuuPiero::Client m_SocketClient;
+    Player m_Player = Player(10, 10, 50, 100);
+
 };
 
