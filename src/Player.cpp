@@ -5,8 +5,7 @@ Player::Player(int x, int y, int width, int height): GameObject(x, y, width, hei
 }
 
 void Player::Render() {
-    // SDL_SetRenderDrawColor(Sanbox::GetRenderer(), 0, 255, 0, 255);
-    // SDL_RenderFillRect(Sanbox::GetRenderer(), &m_Rect);
+   
 }
 
 

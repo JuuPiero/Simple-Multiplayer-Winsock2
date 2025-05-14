@@ -1,6 +1,6 @@
 #pragma once
 #include "Application.h"
-#include "Socket/Server.h"
+#include <unordered_map>
 // #include <SDL2/SDL.h>
 // using namespace JuuPiero;
 
@@ -13,12 +13,12 @@ public:
     void Render() override;
     void RenderUI() override;
     // inline static SDL_Renderer* GetRenderer() { return s_Renderer; }
+    
 
 protected:
-    JuuPiero::Server m_SocketServer;
+    //ROOM
     // Shared<JuuPiero::Server> m_ServerSocket;
     // static SDL_Renderer* s_Renderer;
-   
 };
 
 }

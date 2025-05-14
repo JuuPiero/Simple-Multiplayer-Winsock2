@@ -19,6 +19,7 @@ public:
 
     inline SDL_Window* GetWindow() { return m_Window; }
     // void CreateSimpleRenderer();
+public:
 
 private:
     bool m_IsRunning = true;

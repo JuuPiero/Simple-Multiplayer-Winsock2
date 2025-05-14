@@ -18,6 +18,7 @@ public:
     virtual void Run();
     virtual void Render() = 0;
     virtual void RenderUI() = 0;
+
     inline Shared<Window> GetNativeWindow() {
         return m_Window;
     }
@@ -26,6 +27,7 @@ public:
     }
     // virtual void Update();
 protected:
+
     ApplicationProperties m_Props;
     Shared<Window> m_Window;
     // Shared<ImGuiLayer> m_ImGuiLayer;

@@ -31,14 +31,13 @@
 #include <ctime>
 #include <iomanip>
 #include <random>
-
-#define WINDOW_WIDTH 800
+#define WINDOW_WIDTH 400
 #define WINDOW_HEIGHT 680
 
 #define MAX_CLIENTS 1024
 #define DEFAULT_BUFLEN 2048
-// #include <nlohmann/json.hpp>
-// using json = nlohmann::json;
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 #include "Math/Vector2.h"
 #define PrintLn(mess) std::cout << mess << std::endl
 

@@ -23,9 +23,9 @@ target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendo
 target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLM/lib)
 # target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/lib)
 
-# include(FetchContent)
-# FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
-# FetchContent_MakeAvailable(json)
+include(FetchContent)
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+FetchContent_MakeAvailable(json)
 
 target_link_libraries(${PROJECT_NAME} 
 glfw3 
@@ -33,6 +33,7 @@ glm
 # spdlog
 SDL2
 SDL2main
-# nlohmann_json::nlohmann_json
+nlohmann_json::nlohmann_json
 wsock32 ws2_32
+user32
 )

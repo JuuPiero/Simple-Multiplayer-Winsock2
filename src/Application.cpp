@@ -2,9 +2,6 @@
 #define GLAD_GL_IMPLEMENTATION
 #define GLFW_INCLUDE_NONE
 
-
-
-
 #include "Application.h"
 #include "Window/Window.h"
 #include "Window/GLFWNativeWindow.h"

@@ -62,7 +62,6 @@ void SDLNativeWindow::PollEvents() {
 }
 
 SDLNativeWindow::~SDLNativeWindow() {
-    // SDL_DestroyC 
     SDL_DestroyWindow(m_Window);
     SDL_Quit();
     std::cout << "SDL window destroyed" << std::endl;
