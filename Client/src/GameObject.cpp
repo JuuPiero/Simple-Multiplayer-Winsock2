@@ -16,4 +16,5 @@ void GameObject::Update(uint32_t deltaTime) {
     m_Rect = {m_Position.x, m_Position.y, m_Size.x, m_Size.y};
 }
 
+
 }

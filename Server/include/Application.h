@@ -18,6 +18,7 @@ public:
     virtual void Run();
     virtual void Render() = 0;
     virtual void RenderUI() = 0;
+    void static LoadDotenv(const std::string& filepath);
 
     inline Shared<Window> GetNativeWindow() {
         return m_Window;

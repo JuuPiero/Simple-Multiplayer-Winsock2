@@ -94,8 +94,14 @@ void SocketClient::ReceiveLoop() {
                         std::cout << position.dump() << std::endl;
                         int x = position["x"];
                         int y = position["y"];
-                        Player newPlayer = Player{x, y, 50, 100};
-                        m_Players[id] = newPlayer;
+                        m_Players[id].SetSize(50, 100);
+                        if(m_Players[id].GetId() == 0) {
+                            m_Players[id].SetId(id);
+                        }
+                        m_Players[id].SetPosition(x, y);
+                        // Player newPlayer = Player{x, y, 50, 100};
+                        // newPlayer.SetId(id);
+                        // m_Players[id] = newPlayer;
                     }
                     break;
                 }

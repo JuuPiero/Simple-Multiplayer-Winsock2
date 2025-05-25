@@ -7,19 +7,21 @@ extern Shared<JuuPiero::Application> CreateApplication();
 
 
 int main(int argc, char *argv[]) {
-    
-    const int PORT = 8386;
+   JuuPiero::Application::LoadDotenv("./.env");
 
-    JuuPiero::ServerSocket server;
-    server.Listen(PORT, []() {
-        std::cout << "Server listening on port " << PORT << std::endl;
-    }); // sub thread
+
+    const int PORT = atoi(getenv("PORT"));
+
+    JuuPiero::ServerSocket server(getenv("SERVER_ADDRESS"));
+    server.Listen(PORT, [PORT]() {
+        std::cout << "Server " << getenv("SERVER_ADDRESS") << " listening on port " << PORT << std::endl;
+    });
     
     std::string message = "";
     
     while (true)
     {
-        std::cout << "Message den tat ca: ";
+        std::cout << "Message to clients: ";
         std::getline(std::cin, message);
         server.Emit(message);
         // std::cin.ignore();

@@ -24,7 +24,7 @@ Sanbox::~Sanbox()
 }
 
 void Sanbox::Render() {
-    SDL_SetRenderDrawColor(s_Renderer, 255, 0, 0, 255); // Đỏ
+    SDL_SetRenderDrawColor(s_Renderer, 31, 28, 44, 255); 
     SDL_RenderClear(s_Renderer);
 }
 void Sanbox::RenderUI() {
@@ -35,7 +35,7 @@ void Sanbox::Run() {
 
     const uint32_t FPS = 60;
     const uint32_t frameDelay = 1000 / FPS; // mỗi frame ~16ms
-    // Client::GetInstance()->Run();
+
     uint32_t lastTime = SDL_GetTicks();
 
     while(!m_Window->ShouldClose()) {
@@ -47,14 +47,15 @@ void Sanbox::Run() {
         for (auto &p : players)
         {
             p.second.Update(deltaTime);
+           
             if(p.first == SocketClient::GetInstance()->GetId()) {
                 p.second.HandleInput(deltaTime);
             }
         }
         
-        SDL_PumpEvents();
-        const Uint8* keys = SDL_GetKeyboardState(nullptr);
-        // m_Player.Update(deltaTime);
+        // SDL_PumpEvents();
+        // const Uint8* keys = SDL_GetKeyboardState(nullptr);
+
         // m_ImGuiLayer->BeginFrame();
 
         RenderUI();

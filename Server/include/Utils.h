@@ -5,9 +5,9 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+// #include <glm/glm.hpp>
+// #include <glm/gtc/type_ptr.hpp>
+// #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
 
 // #include <spdlog/spdlog.h>
@@ -31,8 +31,8 @@
 #include <ctime>
 #include <iomanip>
 #include <random>
-#define WINDOW_WIDTH 400
-#define WINDOW_HEIGHT 680
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 380
 
 #define MAX_CLIENTS 1024
 #define DEFAULT_BUFLEN 2048
@@ -55,4 +55,12 @@ template <typename T> using Weak = std::weak_ptr<T>;
 inline uint32_t GetId() {
     static uint32_t clientIdCounter = 0;
     return ++clientIdCounter;
+}
+
+
+inline int RandomRangeInt(int min, int max) {
+    static std::random_device rd;    
+    static std::mt19937 gen(rd());   // Mersenne Twister RNG
+    std::uniform_int_distribution<> distr(min, max);
+    return distr(gen);
 }

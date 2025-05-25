@@ -4,8 +4,6 @@
 #include "Utils.h"
 #include "Player.h"
 
-
-
 namespace JuuPiero {
 
 ServerSocket::ServerSocket(std::string ip): m_IpAddress(ip) {
@@ -25,7 +23,7 @@ ServerSocket::ServerSocket(std::string ip): m_IpAddress(ip) {
 void ServerSocket::Listen(uint32_t port, std::function<void()> callback) {
     m_Port = port;
     m_ServerAddr.sin_family = AF_INET;
-    m_ServerAddr.sin_addr.s_addr = INADDR_ANY; //lắng nghe mọi máy từ mạng cục bộ
+    m_ServerAddr.sin_addr.s_addr = INADDR_ANY; 
     m_ServerAddr.sin_port = htons(m_Port);
 
     // Bind socket
@@ -45,17 +43,23 @@ void ServerSocket::Listen(uint32_t port, std::function<void()> callback) {
         callback();
     }
 
-    // std::thread runThread()
-
+   
 
     std::thread runThread([this]() {
+       
         while (true) {
             SOCKET clientSocket = accept(m_ListenSocket, nullptr, nullptr); // blocking
+
             if (clientSocket != INVALID_SOCKET) {
                 std::lock_guard<std::mutex> lock(m_ClientsMutex);
                 uint32_t id = NewId();
+                int max = 5;
+                if(id > max) {
+                    return;
+                }
+
                 m_Clients[id] = clientSocket;
-                Player newPlayer = Player(0, 0, 50, 100);
+                Player newPlayer = Player(RandomRangeInt(0, 400), 0, 50, 100);
                 m_Players[id] = newPlayer;
                 // OnConnect(id);
                 std::thread handlerThread(&ServerSocket::ClientHandler, this, id);
@@ -95,7 +99,11 @@ void ServerSocket::OnConnect(uint32_t clientSocketId) {
 }
 
 void ServerSocket::ClientHandler(uint32_t clientSocketId) {
-    SOCKET clientSocket = m_Clients[clientSocketId];
+    SOCKET clientSocket;
+    {
+        std::lock_guard<std::mutex> lock(m_ClientsMutex);
+        clientSocket = m_Clients[clientSocketId];
+    }
     std::cout << "A client connected to server: " << clientSocketId << ": "  << clientSocket << std::endl;
     OnConnect(clientSocketId);
 
@@ -110,7 +118,13 @@ void ServerSocket::ClientHandler(uint32_t clientSocketId) {
                 request = json::parse(std::string(buffer));
             }
             catch(const std::exception& e) {
-                continue;
+                // khắc phục
+                closesocket(clientSocket);
+                m_Clients.erase(clientSocketId);
+                m_Players.erase(clientSocketId);    
+                return;
+
+                //continue; 
             }
             
            
