@@ -7,7 +7,7 @@
 #include <functional>
 #include <mutex>
 #include "Player.h"
-
+#include <atomic>
 namespace JuuPiero {
 
     class SocketClient {
@@ -16,7 +16,7 @@ namespace JuuPiero {
         ~SocketClient();
 
         bool Connect(const std::string& ip, uint16_t port);
-        void On(const std::string& eventName, std::function<void(const std::string&)> callback);
+     
         void Emit(const std::string& message);
         void Disconnect();
 
@@ -28,21 +28,25 @@ namespace JuuPiero {
         inline const uint32_t& GetId() {
             return m_Id;
         }
-    private:
+        inline void Lock() {
+            std::lock_guard<std::mutex> lock(m_Mutex);
+        }
+    protected:
         void ReceiveLoop();
 
-    private:
+    protected:
         static SocketClient* s_Instance;
         uint32_t m_Id = 0;
 
         WSADATA m_WsaData;
         SOCKET m_Socket;
         std::thread m_ReceiveThread;
-        std::unordered_map<std::string, std::function<void(const std::string&)>> m_EventHandlers;
+        // std::unordered_map<std::string, std::function<void(const std::string&)>> m_EventHandlers;
         std::mutex m_Mutex;
-        bool m_Running = false;
+        std::atomic<bool> m_Running{false};
 
 
         std::unordered_map<uint32_t, Player> m_Players;
+        std::string m_Leftover;
     };
 }

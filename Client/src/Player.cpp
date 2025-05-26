@@ -36,27 +36,27 @@ void Player::HandleInput(uint32_t deltaTime) {
     auto prevY = m_Position.y;
 
     if(m_Position.y + m_Size.y < WINDOW_HEIGHT) {
-        m_Position.y += 5;
+        prevY += 5;
     }
 
     if (keys [SDL_SCANCODE_RIGHT]) {
-        m_Position.x += m_Velocity.x;
+        prevX += m_Velocity.x;
         PrintLn(m_Position.x);
     }
     else if(keys[SDL_SCANCODE_LEFT]) {
-        m_Position.x -= m_Velocity.x;
+        prevX -= m_Velocity.x;
     }
     else if(keys[SDL_SCANCODE_SPACE]) {
-        m_Position.y -= m_Velocity.y;
+        prevY -= m_Velocity.y;
     }
 
     if(prevX != m_Position.x || prevY != m_Position.y) {
-        // PrintLn("Update");
+      
         json request;
         request["request_code"] = JuuPiero::RequestCode::MOVE;
         request["position"] = {
-            {"x",  m_Position.x},
-            {"y",  m_Position.y},
+            {"x",  prevX},
+            {"y",  prevY},
         };
         JuuPiero::SocketClient::GetInstance()->Emit(request.dump());
     }

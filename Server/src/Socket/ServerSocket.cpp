@@ -53,10 +53,10 @@ void ServerSocket::Listen(uint32_t port, std::function<void()> callback) {
             if (clientSocket != INVALID_SOCKET) {
                 std::lock_guard<std::mutex> lock(m_ClientsMutex);
                 uint32_t id = NewId();
-                int max = 5;
-                if(id > max) {
-                    return;
-                }
+                // int max = 5;
+                // if(id > max) {
+                //     return;
+                // }
 
                 m_Clients[id] = clientSocket;
                 Player newPlayer = Player(RandomRangeInt(0, 400), 0, 50, 100);
@@ -118,12 +118,8 @@ void ServerSocket::ClientHandler(uint32_t clientSocketId) {
                 request = json::parse(std::string(buffer));
             }
             catch(const std::exception& e) {
-                // khắc phục
-                closesocket(clientSocket);
-                m_Clients.erase(clientSocketId);
-                m_Players.erase(clientSocketId);    
-                return;
-
+                std::cerr << "JSON parse error: " << e.what() << std::endl;
+                continue;
                 //continue; 
             }
             
@@ -186,10 +182,11 @@ void ServerSocket::ClientHandler(uint32_t clientSocketId) {
 void ServerSocket::Send(uint32_t clientSocketId, const std::string& message) {
     std::lock_guard<std::mutex> lock(m_ClientsMutex);
     SOCKET clientSocket = m_Clients[clientSocketId];
-    int result = send(clientSocket, message.c_str(), message.length(), 0);
+    
+    // Gửi JSON + dấu \n để phân tách
+    std::string finalMessage = message + "\n";
+    int result = send(clientSocket, finalMessage.c_str(), finalMessage.length(), 0);
     if (result == SOCKET_ERROR) {
-        std::lock_guard<std::mutex> lock(m_ClientsMutex);
-
         std::cout << "Send failed: " << WSAGetLastError() << std::endl;
         closesocket(clientSocket);
         m_Clients.erase(clientSocketId);

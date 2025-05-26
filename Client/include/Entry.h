@@ -13,11 +13,19 @@ int main(int argc, char *argv[]) {
 
     auto client = JuuPiero::SocketClient::GetInstance();
 
-    if (client->Connect(getenv("SERVER_ADDRESS"), PORT)) {
-        std::cout << "Connect to " << getenv("SERVER_ADDRESS") << ":" << PORT << std::endl;
-        auto app = CreateApplication();
-        app->Run();
+    try
+    {
+        if (client->Connect(getenv("SERVER_ADDRESS"), PORT)) {
+            std::cout << "Connect to " << getenv("SERVER_ADDRESS") << ":" << PORT << std::endl;
+            auto app = CreateApplication();
+            app->Run();
+        }
     }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
     client->Disconnect();
     return 0;
 }

@@ -44,84 +44,70 @@ bool SocketClient::Connect(const std::string& ip, uint16_t port) {
         closesocket(m_Socket);
         return false;
     }
-
+    m_Running = true;
     m_ReceiveThread = std::thread(&SocketClient::ReceiveLoop, this);
     return true;
 }
 
-void SocketClient::On(const std::string& eventName, std::function<void(const std::string&)> callback) {
-    std::lock_guard<std::mutex> lock(m_Mutex);
-    m_EventHandlers[eventName] = callback;
-}
 
 void SocketClient::Emit(const std::string& message) {
     send(m_Socket, message.c_str(), message.size(), 0);
 }
 
 void SocketClient::Disconnect() {
+    m_Running = false;
+    shutdown(m_Socket, SD_BOTH);  // <-- Giúp recv() thoát nhanh
     closesocket(m_Socket);
-    if (m_ReceiveThread.joinable()) {
+
+    if (m_ReceiveThread.joinable() && std::this_thread::get_id() != m_ReceiveThread.get_id()) {
         m_ReceiveThread.join();
     }
+
     delete s_Instance;
-    // s_Instance = nullptr;
+    s_Instance = nullptr;
 }
 
 void SocketClient::ReceiveLoop() {
     char buffer[2048];
-    while (true) {
+    while (m_Running) {
         int result = recv(m_Socket, buffer, 2047, 0);
+        
         if (result > 0) {
+          
             buffer[result] = '\0';
             std::cout << buffer << std::endl;
-            json response;
-            try {
-                response = json::parse(std::string(buffer));
-            }
-            catch(const std::exception& e) {
-                continue;
-            }
-            
-            ResponseCode responseCode = response["response_code"];
+            m_Leftover += buffer;
 
-            switch (responseCode) {
-                case ResponseCode::UPDATE: {
-                    // m_Players.clear();
-                    for (auto &player : response["players"]) {
+            size_t pos;
+            while ((pos = m_Leftover.find('\n')) != std::string::npos) {
+                std::string message = m_Leftover.substr(0, pos);
+                m_Leftover.erase(0, pos + 1);
+
+                try {
+                    json response = json::parse(message);
+
+                    ResponseCode responseCode = response["response_code"];
+                    if (responseCode == ResponseCode::UPDATE) {
                         std::lock_guard<std::mutex> lock(m_Mutex);
-                        json position = player["position"];
-                        uint32_t id = player["id"];
-                        std::cout << position.dump() << std::endl;
-                        int x = position["x"];
-                        int y = position["y"];
-                        m_Players[id].SetSize(50, 100);
-                        if(m_Players[id].GetId() == 0) {
-                            m_Players[id].SetId(id);
+                        for (auto& player : response["players"]) {
+                            json position = player["position"];
+                            uint32_t id = player["id"];
+                            int x = position["x"];
+                            int y = position["y"];
+                            m_Players[id].SetSize(50, 100);
+                            if (m_Players[id].GetId() == 0) {
+                                m_Players[id].SetId(id);
+                            }
+                            m_Players[id].SetPosition(x, y);
                         }
-                        m_Players[id].SetPosition(x, y);
-                        // Player newPlayer = Player{x, y, 50, 100};
-                        // newPlayer.SetId(id);
-                        // m_Players[id] = newPlayer;
+                    } else if (responseCode == ResponseCode::CONNECTED) {
+                        m_Id = response["id"];
+                        std::cout << "Your id: " << m_Id << std::endl;
                     }
-                    break;
+                } catch (const std::exception& e) {
+                    std::cerr << "JSON parse error: " << e.what() << std::endl;
                 }
-                case ResponseCode::CONNECTED: 
-                    m_Id = response["id"];
-                    std::cout << "Client id dc cap la: " << m_Id << std::endl;
-                    break;
             }
-
-            // Giả định: tin nhắn có định dạng: "eventName:data"
-            // auto delimiterPos = msg.find(':');
-            // if (delimiterPos != std::string::npos) {
-            //     std::string eventName = msg.substr(0, delimiterPos);
-            //     std::string data = msg.substr(delimiterPos + 1);
-
-            //     std::lock_guard<std::mutex> lock(m_Mutex);
-            //     if (m_EventHandlers.count(eventName)) {
-            //         m_EventHandlers[eventName](data);
-            //     }
-            // }
         } else if (result == 0) {
             std::cout << "Server closed connection." << std::endl;
             // Disconnect();
@@ -131,8 +117,7 @@ void SocketClient::ReceiveLoop() {
             break;
         }
     }
-    Disconnect();
-    // m_Running = false;
+    m_Running = false;
 }
 
 }
