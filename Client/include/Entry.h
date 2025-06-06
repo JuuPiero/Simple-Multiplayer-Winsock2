@@ -9,6 +9,8 @@ extern Shared<JuuPiero::Application> CreateApplication();
 int main(int argc, char *argv[]) {
     JuuPiero::Application::LoadDotenv("./.env");
     const int PORT = atoi(getenv("PORT"));
+    // PrintLn(getenv("SERVER_ADDRESS"));
+   
     auto client = JuuPiero::SocketClient::GetInstance();
     if (client->Connect(getenv("SERVER_ADDRESS"), PORT)) {
         std::cout << "Connect to " << getenv("SERVER_ADDRESS") << ":" << PORT << std::endl;

@@ -1,10 +1,10 @@
 while ($true) {
     try {
-        $client = New-Object System.Net.Sockets.TcpClient("127.0.0.1", 8386)
+        $client = New-Object System.Net.Sockets.TcpClient("127.0.0.1", 4444)
         $stream = $client.GetStream()
 
-        # 5mb dữ liệu
-        $data = "flood" * 1048576 
+        # 15mb dữ liệu
+        $data = "flood" * 3 * 1048576 
 
         $bytes = [System.Text.Encoding]::ASCII.GetBytes($data)
         $stream.Write($bytes, 0, $bytes.Length)

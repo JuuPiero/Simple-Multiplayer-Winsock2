@@ -26,6 +26,29 @@ SocketClient::~SocketClient() {
 }
 
 
+// bool SocketClient::Connect(const std::string& ip, uint16_t port) {
+//     m_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+//     if (m_Socket == INVALID_SOCKET) {
+//         std::cout << "Socket creation failed: " << WSAGetLastError() << std::endl;
+//         return false;
+//     }
+
+//     sockaddr_in serverAddr{};
+//     serverAddr.sin_family = AF_INET;
+//     inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr);
+//     serverAddr.sin_port = htons(port);
+
+//     int result = connect(m_Socket, (sockaddr*)&serverAddr, sizeof(serverAddr));
+//     if (result == SOCKET_ERROR) {
+//         std::cout << "Connect failed: " << WSAGetLastError() << std::endl;
+//         closesocket(m_Socket);
+//         return false;
+//     }
+//     m_Running = true;
+//     m_ReceiveThread = std::thread(&SocketClient::ReceiveLoop, this);
+//     return true;
+// }
+
 bool SocketClient::Connect(const std::string& ip, uint16_t port) {
     m_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (m_Socket == INVALID_SOCKET) {
@@ -33,17 +56,30 @@ bool SocketClient::Connect(const std::string& ip, uint16_t port) {
         return false;
     }
 
-    sockaddr_in serverAddr{};
-    serverAddr.sin_family = AF_INET;
-    inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr);
-    serverAddr.sin_port = htons(port);
+    addrinfo hints{}, *result = nullptr;
+    hints.ai_family = AF_INET;         // IPv4
+    hints.ai_socktype = SOCK_STREAM;   // TCP
 
-    int result = connect(m_Socket, (sockaddr*)&serverAddr, sizeof(serverAddr));
-    if (result == SOCKET_ERROR) {
-        std::cout << "Connect failed: " << WSAGetLastError() << std::endl;
+    // Convert port to string
+    std::string portStr = std::to_string(port);
+
+    int res = getaddrinfo(ip.c_str(), portStr.c_str(), &hints, &result);
+    if (res != 0 || result == nullptr) {
+        std::cout << "getaddrinfo failed: " << gai_strerrorA(res) << std::endl;
         closesocket(m_Socket);
         return false;
     }
+
+    // Connect to the first resolved address
+    int connectRes = connect(m_Socket, result->ai_addr, (int)result->ai_addrlen);
+    if (connectRes == SOCKET_ERROR) {
+        std::cout << "Connect failed: " << WSAGetLastError() << std::endl;
+        freeaddrinfo(result);
+        closesocket(m_Socket);
+        return false;
+    }
+
+    freeaddrinfo(result); // Don't forget to free memory
     m_Running = true;
     m_ReceiveThread = std::thread(&SocketClient::ReceiveLoop, this);
     return true;
